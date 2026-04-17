@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import path from "path";
+import 'dotenv/config';
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io"; // Asegúrate de tener instalado socket.io
