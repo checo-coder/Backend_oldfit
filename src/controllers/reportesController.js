@@ -39,3 +39,43 @@ export const obtenerHistorialReportes = async (req, res) => {
     res.status(500).json({ error: "Error al obtener historial de reportes" });
   }
 };
+
+export const guardarReporte = async (req, res) => {
+  const { id_cliente, id_geriatra, titulo, url_pdf } = req.body;
+
+  try {
+    const query = `
+      INSERT INTO reportes_pdf (id_cliente, id_geriatra, titulo, url_pdf) 
+      VALUES ($1, $2, $3, $4) 
+      RETURNING *;
+    `;
+    
+    const nuevoReporte = await pool.query(query, [id_cliente, id_geriatra, titulo, url_pdf]);
+    res.status(201).json(nuevoReporte.rows[0]);
+    
+  } catch (error) {
+    console.error("Error al guardar reporte en BD:", error);
+    res.status(500).json({ error: "No se pudo guardar el reporte." });
+  }
+};
+
+// Endpoint para leer los reportes (Lo usa la App Móvil)
+export const obtenerReportesPaciente = async (req, res) => {
+  const { id_cliente } = req.params;
+
+  try {
+    const query = `
+      SELECT id_reporte, titulo, url_pdf, fecha_creacion 
+      FROM reportes_pdf 
+      WHERE id_cliente = $1 
+      ORDER BY fecha_creacion DESC;
+    `;
+    
+    const reportes = await pool.query(query, [id_cliente]);
+    res.status(200).json(reportes.rows);
+    
+  } catch (error) {
+    console.error("Error al obtener reportes:", error);
+    res.status(500).json({ error: "No se pudieron obtener los reportes." });
+  }
+};
