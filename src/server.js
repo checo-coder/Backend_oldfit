@@ -81,41 +81,69 @@ app.post("/api/guardar-token", async (req, res) => {
   }
 });
 
-app.post("/api/ubicacion-fondo", (req, res) => {
+app.post("/ubicacion-fondo", (req, res) => {
   const { id_paciente, latitud, longitud } = req.body;
-  const datosUbicacion = { id_paciente, latitud, longitud };
-  io.to(`sala-${id_paciente}`).emit("ubicacion-actualizada", datosUbicacion);
-  res.status(200).json({ mensaje: "Ubicación retransmitida" });
+  
+  // BANDERA SERVIDOR 1: ¿Llegó la petición?
+  console.log(`\n🚩 [SERVER DEBUG] Petición recibida del Paciente: ${id_paciente}, ${latitud}, ${longitud}`);
+  
+  if (!id_paciente || !latitud || !longitud) {
+    console.log("   ❌ Error: Datos incompletos");
+    return res.status(400).json({ error: "Datos de GPS incompletos" });
+  }
+
+  // BANDERA SERVIDOR 2: ¿A qué sala vamos a emitir?
+  const sala = `sala-${id_paciente}`;
+  console.log(`   📡 Emitiendo a la sala: ${sala}`);
+
+  // Emitimos el evento que el cuidador está escuchando
+  io.to(sala).emit("ubicacion-actualizada", {
+    id_paciente,
+    latitud,
+    longitud
+  });
+  
+  res.status(200).json({ mensaje: "Ubicación retransmitida con éxito" });
 });
 
-// --- 7. LÓGICA DE SOCKETS ---
-io.on("connection", (socket) => {
-  console.log("🟢 Conexión activa:", socket.id);
+// --- 5. LÓGICA DE SOCKETS (Comunicación Bidireccional) ---
 
+io.on("connection", (socket) => {
+  console.log("🟢 Nuevo dispositivo conectado:", socket.id);
+
+  // --- MÓDULO: RASTREO GPS ---
+  // El cuidador se une a la sala del paciente para monitorearlo
   socket.on("unirse-rastreo", (idPaciente) => {
     socket.join(`sala-${idPaciente}`);
+    console.log(`📡 Cuidador unido a la sala de seguridad: ${idPaciente}`);
   });
 
+  // Retransmisión de ubicación en primer plano
   socket.on("enviar-ubicacion", (datos) => {
     io.to(`sala-${datos.id_paciente}`).emit("ubicacion-actualizada", datos);
   });
 
+  // --- MÓDULO: CHAT ---
+  // Unirse a una conversación específica
   socket.on("unirse-chat", (idConversacion) => {
     socket.join(`chat-${idConversacion}`);
+    console.log(`💬 Usuario entró al chat #${idConversacion}`);
   });
 
+  // Envío de mensajes en tiempo real
   socket.on("enviar-mensaje", (data) => {
+    // Retransmitimos a todos los integrantes de la sala de chat
     io.to(`chat-${data.id_conversacion}`).emit("recibir-mensaje", {
       ...data,
       fecha_envio: new Date(),
     });
   });
 
+  // Desconexión
   socket.on("disconnect", () => {
-    console.log("🔴 Desconectado");
+    console.log("🔴 Dispositivo desconectado");
   });
 });
-
 // --- 8. ENCENDIDO ---
 server.listen(PORT, async () => {
   console.log("🚀 Servidor Unificado Old-Fit corriendo en: " + PORT);
