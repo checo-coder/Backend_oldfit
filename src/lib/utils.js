@@ -14,8 +14,8 @@ export const generateToken = (userId, userRole, res) => { // Añadimos userRole
     res.cookie("jwt", token, {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: "strict",
-        secure: false, 
+        sameSite: "none",
+        secure: true, 
     });
 
     return token;
