@@ -47,7 +47,7 @@ export const getContacts = async (req, res) => {
       query = `
         SELECT id_cliente AS id, nombre || ' ' || apellidop AS "fullName", rol, foto_perfil AS "profilePic" 
         FROM clientes 
-        WHERE id_geriatra = $1
+        WHERE id_geriatra = $1 AND rol = 'cuidador'
       `;
       queryParams = [userId];
     } else {
