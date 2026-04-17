@@ -30,7 +30,7 @@ import reportesRoutesMovil from "./routes/reportesRoutes.js";
 // --- 2. CONFIGURACIÓN INICIAL ---
 const app = express();
 const server = http.createServer(app);
-const PORT = ENV.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 
 // Configuración de Socket.io (Unificada para Web y Móvil)
 const io = new Server(server, { 

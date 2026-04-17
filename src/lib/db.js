@@ -13,7 +13,7 @@ export const pool = new Pool({
 
 export const connectDB = async () => {
   try {
-    if (!ENV.DATABASE_URL) throw new Error("La DATABASE_URL no está configurada correctamente.");
+    if (!process.env.DATABASE_URL) throw new Error("La DATABASE_URL no está configurada correctamente.");
 
     // Verificamos la conexión
     const client = await pool.connect();
