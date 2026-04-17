@@ -14,6 +14,6 @@ router.get("/historial/:id_cliente/", verificarToken, obtenerHistorialReportes);
 router.post("/guardar", verificarToken, guardarReporte);
 
 // GET: /api/movil/reportes/:id_cliente 
-router.get("/:id_cliente", verificarToken, obtenerReportesPaciente);
+
 
 export default router;
