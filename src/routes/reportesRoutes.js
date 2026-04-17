@@ -3,7 +3,7 @@ import {
   obtenerUltimoReporte,
   obtenerHistorialReportes
 } from "../controllers/reportesController.js";
-import { guardarReporte, obtenerReportesPaciente } from "../controllers/reportesController.js";
+import { guardarReporte } from "../controllers/reportesController.js";
 import { verificarToken } from "../middleware/auth.js";
 
 const router = express.Router();
