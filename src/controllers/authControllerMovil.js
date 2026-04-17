@@ -13,7 +13,7 @@ export const login = async (req, res) => {
     if (contrasena !== usuarioBD.contrasena) return res.status(401).json({ mensaje: "Contraseña incorrecta" });
 
     const payload = { idUsuario: usuarioBD.id_cliente, rol: usuarioBD.rol, nombre: usuarioBD.nombre };
-    const token = jwt.sign(payload, ENV.JWT_SECRET, { expiresIn: "300h" });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "300h" });
 
     // Lógica para el ID del paciente asignado
     let idPacienteAsignado = usuarioBD.rol === "Persona Mayor" ? usuarioBD.id_cliente : null;

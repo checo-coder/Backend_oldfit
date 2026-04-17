@@ -1,11 +1,14 @@
 import pg from "pg";
-import { ENV } from "./env.js";
+
 
 const { Pool } = pg;
 
 //se exporta la variable de entorno de el archivo env.js
 export const pool = new Pool({
-  connectionString: ENV.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // ⚠️ OBLIGATORIO para que Railway no rechace la conexión
+  }
 });
 
 export const connectDB = async () => {

@@ -2,7 +2,6 @@ import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import { generateToken } from "../lib/utils.js";
 import { pool } from "../lib/db.js"; 
 import bcrypt from "bcryptjs";
-import { ENV } from "../lib/env.js";
 import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
@@ -66,7 +65,7 @@ export const signup = async (req, res) => {
     });
 
     try {
-      await sendWelcomeEmail(savedUser.correo, savedUser.nombre, ENV.CLIENT_URL, savedUser.rol);
+      await sendWelcomeEmail(savedUser.correo, savedUser.nombre, process.env.CLIENT_URL, savedUser.rol);
     } catch (error) {
       console.error("Error al enviar correo de bienvenida:", error);
     }
