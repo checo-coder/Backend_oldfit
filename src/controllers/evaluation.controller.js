@@ -1,11 +1,13 @@
 import { pool } from "../lib/db.js";
 import cloudinary from "../lib/cloudinary.js";
 import { buildEvaluationPDF } from "../lib/pdf.generator.js";
+import { format } from "path";
+import { type } from "os";
 
 const uploadBufferToCloudinary = (buffer, folderName) => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder: folderName, resource_type: "raw" },
+      { folder: folderName, resource_type: "image", format:"pdf", access_mode:"public", type:"upload" },
       (error, result) => {
         if (error) reject(error);
         else resolve(result);
