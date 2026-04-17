@@ -1,6 +1,6 @@
 import express from "express";
 import { protectRoute } from "../middleware/auth.middleware.js";
-import {  createEvaluation } from "../controllers/evaluation.controller.js";
+import { createEvaluation } from "../controllers/evaluation.controller.js";
 import { pool } from "../lib/db.js";
 
 const router = express.Router();
