@@ -79,7 +79,7 @@ export const createEvaluation = async (req, res) => {
     // Si quieres un registro del reporte generado, puedes usar una tabla aparte
     // Por ahora devolvemos la URL del PDF directamente
 await pool.query(
-      `INSERT INTO reportes_PDF (id_cliente, id_geriatra, titulo, url_pdf, fecha) 
+      `INSERT INTO reportes_PDF (id_cliente, id_geriatra, titulo, url_pdf, fecha_creacion) 
        VALUES ($1, $2, $3, $4, NOW())`,
       [
         patientId, 
