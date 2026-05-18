@@ -78,6 +78,17 @@ export const createEvaluation = async (req, res) => {
     // Guardar registro en evaluaciones_fisicas (tabla real del schema)
     // Si quieres un registro del reporte generado, puedes usar una tabla aparte
     // Por ahora devolvemos la URL del PDF directamente
+await pool.query(
+      `INSERT INTO reportes_PDF (id_cliente, id_geriatra, titulo, url_pdf, fecha) 
+       VALUES ($1, $2, $3, $4, NOW())`,
+      [
+        patientId, 
+        evaluatorId, 
+        type || "Reporte Integral de Evolución", 
+        cloudinaryResponse.secure_url
+      ]
+    );
+
     res.status(201).json({
       message: "Evaluación guardada y PDF generado exitosamente",
       pdf_url: cloudinaryResponse.secure_url,
